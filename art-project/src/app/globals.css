@@ -3,40 +3,65 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  color: white;
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+h1 {
+  color: #000000;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.container {
+  display: flex;
+  flex-direction: row; 
+  height: 100vh;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+#toolbar {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  width: 70px;
+  background-color: #ffffff;
+}
+
+#toolbar * {
+  margin-bottom: 6px;
+}
+
+#toolbar label {
+  font-size: 12px;
+  color: black;
+}
+
+#toolbar input {
+  width: 100px;
+  flex-shrink: 0;
+}
+
+#toolbar button {
+  background-color: #1565c0;
+  border: none;
+  border-radius: 4px;
+  color:white;
+  padding: 2px;
+}
+
+.sketchboard {
+  flex-grow: 1; /* to take up rest of space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#sketchboard {
+  background-color: white;
+  border: 3px solid black;
 }
