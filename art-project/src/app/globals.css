@@ -1,5 +1,5 @@
 :root {
-  --background: #ffffff;
+  --background: #fffdf6;
   --foreground: #171717;
 }
 
@@ -8,10 +8,10 @@ body {
   padding: 0;
   height: 100%;
   overflow: hidden;
-  color: white;
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #fffdf6;
 }
 
 h1 {
@@ -20,16 +20,15 @@ h1 {
 
 .container {
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   height: 100vh;
 }
 
 #toolbar {
   display: flex;
   flex-direction: column;
-  padding: 5px;
-  width: 70px;
-  background-color: #ffffff;
+  padding: 15px;
+  width: 100px;
 }
 
 #toolbar * {
@@ -54,14 +53,36 @@ h1 {
   padding: 2px;
 }
 
+#toolbar select {
+  width: 100%;
+  border-radius: 1px;
+  border: 1px solid #ccc;
+  background-color: #f5f5f5;
+  font-size: 12px;
+  font-family: inherit;
+  color: #333;
+  cursor: pointer;
+  transition: border 0.2s ease;
+}
+
+#toolbar select:focus {
+  outline: none;
+  border-color: #a3c1e3;
+  box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.2);
+}
+
 .sketchboard {
-  flex-grow: 1; /* to take up rest of space */
+  flex-grow: 1;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 #sketchboard {
-  background-color: white;
-  border: 3px solid black;
+  background-color: #faf6e4;
+  border: 20px solid;
+  border-image-source: linear-gradient(45deg, rgb(141, 120, 0), #9e8600, #b8860b, #a3850d);
+  border-image-slice: 1;
+  border-radius: 12px;
+  padding: 0;
 }

@@ -7,8 +7,10 @@ export default function Home() {
   const canvasRef = useRef(null);
   const toolbarRef = useRef(null);
   const ctxRef = useRef(null);
-  const lineWidthRef = useRef(5);
+  const lineWidthRef = useRef(10);
   const strokeStyleRef = useRef("#000000");
+  const brushTypeRef = useRef("round");
+  const rainbowHueRef = useRef(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -18,24 +20,94 @@ export default function Home() {
     const devicePixelRatio = window.devicePixelRatio || 1;
     const width = window.innerWidth * 0.8;
     const height = window.innerHeight * 0.8;
-
-    // Scale for high-resolution displays
     canvas.width = width * devicePixelRatio;
     canvas.height = height * devicePixelRatio;
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
-    ctx.scale(devicePixelRatio, devicePixelRatio); // Scale the drawing context
+    ctx.scale(devicePixelRatio, devicePixelRatio);
 
     let isPainting = false;
 
     const draw = (e) => {
       if (!isPainting) return;
+    
       ctx.lineWidth = lineWidthRef.current;
       ctx.strokeStyle = strokeStyleRef.current;
       ctx.lineCap = "round";
-      ctx.lineJoin = "round"; // Improves line smoothness
-      ctx.lineTo(e.offsetX, e.offsetY); // Fixes alignment issues
-      ctx.stroke();
+      ctx.lineJoin = "round";
+    
+      const x = e.offsetX;
+      const y = e.offsetY;
+      const brush = brushTypeRef.current;
+    
+      if (brush === "round") {
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+      else if (brush === "spray") {
+        for (let i = 0; i < 10; i++) {
+          const offsetX = (Math.random() - 0.5) * lineWidthRef.current * 4;
+          const offsetY = (Math.random() - 0.5) * lineWidthRef.current * 4;
+          ctx.fillStyle = strokeStyleRef.current;
+          ctx.beginPath();
+          ctx.arc(x + offsetX, y + offsetY, 1, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+      }
+      else if (brush === "calligraphy") {
+        const angle = Math.PI / 6;
+        const width = lineWidthRef.current;
+        const length = 10;
+      
+        const x1 = x + Math.cos(angle) * width;
+        const y1 = y + Math.sin(angle) * width;
+        const x2 = x - Math.cos(angle) * width;
+        const y2 = y - Math.sin(angle) * width;
+      
+        ctx.strokeStyle = strokeStyleRef.current;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      }
+      else if (brush === "fuzzy") {
+        const radius = lineWidthRef.current * 2;
+        const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+        gradient.addColorStop(0, strokeStyleRef.current);
+        gradient.addColorStop(1, 'transparent');
+      
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      else if (brush === "paint") {
+        const bristleCount = 20;
+        const radius = lineWidthRef.current / 2;
+      
+        for (let i = 0; i < bristleCount; i++) {
+          const angle = Math.random() * 2 * Math.PI;
+          const distance = Math.random() * radius;
+          const offsetX = Math.cos(angle) * distance;
+          const offsetY = Math.sin(angle) * distance;
+      
+          ctx.beginPath();
+          ctx.strokeStyle = strokeStyleRef.current;
+          ctx.globalAlpha = 0.1 + Math.random() * 0.15;
+          ctx.lineWidth = 1 + Math.random() * 2.5; 
+      
+          ctx.moveTo(x + offsetX, y + offsetY);
+          ctx.lineTo(x + offsetX + 2, y + offsetY + 2);
+          ctx.stroke();
+        }
+      
+        ctx.globalAlpha = 1;
+      }
+      else if (brush === "eraser") {
+        ctx.strokeStyle = "#faf6e4";
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
     };
 
     canvas.addEventListener("mousedown", () => {
@@ -43,10 +115,8 @@ export default function Home() {
       ctx.beginPath();
     });
 
-    canvas.addEventListener("mouseup", () => {
+    canvas.addEventListener('mouseup', (e) => {
       isPainting = false;
-      ctx.stroke();
-      ctx.beginPath();
     });
 
     canvas.addEventListener("mousemove", draw);
@@ -72,14 +142,28 @@ export default function Home() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
 
+  const handleBrushChange = (e) => {
+    brushTypeRef.current = e.target.value;
+  };
+
   return (
     <div className="container">
       <div id="toolbar" ref={toolbarRef}>
         <h1>Draw.</h1>
+        <div></div>
+        <label htmlFor="brush">brush style</label>
+        <select id="brush" name="brush" onChange={handleBrushChange}>
+          <option value="round">Round</option>
+          <option value="spray">Spray</option>
+          <option value="calligraphy">Calligraphy</option>
+          <option value="fuzzy">Fuzzy</option>
+          <option value="paint">Paint Brush</option>
+          <option value="eraser">Eraser</option>
+        </select>
         <label htmlFor="stroke">stroke</label>
         <input id="stroke" name="stroke" type="color" onChange={handleColorChange} />
         <label htmlFor="line-width">line width</label>
-        <input id="line-width" name="line-width" type="number" defaultValue="5" onChange={handleLineWidthChange} />
+        <input id="line-width" name="line-width" type="number" defaultValue="10" onChange={handleLineWidthChange} />
         <button id="clear" onClick={handleClear}>clear</button>
       </div>
       <div className="sketchboard">
