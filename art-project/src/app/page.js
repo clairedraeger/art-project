@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { FaTrash, FaUndo, FaRedo } from 'react-icons/fa';
+import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -11,6 +12,8 @@ export default function Home() {
   const strokeStyleRef = useRef("#000000");
   const brushTypeRef = useRef("round");
   const rainbowHueRef = useRef(0);
+  const [lastImage, setLastImage] = useState(null);
+  const [redoImage, setRedoImage] = useState(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -113,6 +116,10 @@ export default function Home() {
     canvas.addEventListener("mousedown", () => {
       isPainting = true;
       ctx.beginPath();
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      setLastImage(imageData);
+      setRedoImage(null);
     });
 
     canvas.addEventListener('mouseup', (e) => {
@@ -120,6 +127,7 @@ export default function Home() {
     });
 
     canvas.addEventListener("mousemove", draw);
+    ctxRef.current = ctx;
 
     return () => {
       canvas.removeEventListener("mousedown", () => {});
@@ -146,6 +154,26 @@ export default function Home() {
     brushTypeRef.current = e.target.value;
   };
 
+  const handleUndo = () => {
+    if (lastImage && ctxRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = ctxRef.current;
+  
+      const currentImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      setRedoImage(currentImage); // store for redo
+      ctx.putImageData(lastImage, 0, 0);
+      setLastImage(null);
+    }
+  };
+  
+  const handleRedo = () => {
+    if (redoImage && ctxRef.current) {
+      const ctx = ctxRef.current;
+      ctx.putImageData(redoImage, 0, 0);
+      setRedoImage(null);
+    }
+  };
+
   return (
     <div className="container">
       <div id="toolbar" ref={toolbarRef}>
@@ -164,7 +192,11 @@ export default function Home() {
         <input id="stroke" name="stroke" type="color" onChange={handleColorChange} />
         <label htmlFor="line-width">line width</label>
         <input id="line-width" name="line-width" type="number" defaultValue="10" onChange={handleLineWidthChange} />
-        <button id="clear" onClick={handleClear}>clear</button>
+        <div id="icon-row">
+          <button id="icon" onClick={handleClear}><FaTrash style={{ color: 'black' }} /></button>
+          <button id="icon" onClick={handleUndo}><FaUndo style={{ color: 'black' }} /></button>
+          <button id="icon" onClick={handleRedo}><FaRedo style={{ color: 'black' }} /></button>
+        </div>
       </div>
       <div className="sketchboard">
         <canvas id="sketchboard" ref={canvasRef}></canvas>
