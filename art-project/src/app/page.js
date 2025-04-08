@@ -1,8 +1,7 @@
 "use client";
 
-import { FaTrash, FaUndo, FaRedo } from 'react-icons/fa';
 import { useEffect, useRef, useState } from "react";
-import styles from "./page.module.css";
+import { FaTrash, FaUndo, FaRedo } from 'react-icons/fa';
 
 export default function Home() {
   const canvasRef = useRef(null);
@@ -14,6 +13,7 @@ export default function Home() {
   const rainbowHueRef = useRef(0);
   const [lastImage, setLastImage] = useState(null);
   const [redoImage, setRedoImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -174,6 +174,44 @@ export default function Home() {
     }
   };
 
+  const handleSubmit = async () => {
+    console.log('Uploading photo')
+    setIsLoading(true);
+  
+    const canvas = document.getElementById('sketchboard');
+    // copy of the canvas
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    tempCtx.fillStyle = '#fef6d9'; 
+    tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+    tempCtx.drawImage(canvas, 0, 0);
+
+    tempCanvas.toBlob(async (blob) => {
+      const formData = new FormData();
+      formData.append('image', blob, 'drawing.jpg');
+    
+      try {
+        const res = await fetch('http://localhost:4000/image/upload', {
+          method: 'POST',
+          body: formData,
+        });
+    
+        const data = await res.json();
+        console.log('Uploaded Image URL:', data.url);
+      } catch (err) {
+        console.error('Upload error:', err);
+      } finally {
+        setTimeout(() => {
+          const ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          setIsLoading(false);
+        }, 1000);
+      }
+    }, 'image/jpeg');
+  };
+
   return (
     <div className="container">
       <div id="toolbar" ref={toolbarRef}>
@@ -197,10 +235,16 @@ export default function Home() {
           <button id="icon" onClick={handleUndo}><FaUndo style={{ color: 'black' }} /></button>
           <button id="icon" onClick={handleRedo}><FaRedo style={{ color: 'black' }} /></button>
         </div>
+        <button id="submit" onClick={handleSubmit}>submit</button>
       </div>
       <div className="sketchboard">
         <canvas id="sketchboard" ref={canvasRef}></canvas>
       </div>
+      {isLoading && (
+        <div className="loading-overlay">
+          <p>Submitting drawing . . .</p>
+        </div>
+      )}
     </div>
   );
 }
