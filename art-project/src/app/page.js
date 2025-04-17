@@ -193,15 +193,32 @@ export default function Home() {
       formData.append('image', blob, 'drawing.jpg');
     
       try {
-        const res = await fetch('http://localhost:4000/image/upload', {
+        // upload to cloudinary
+        const uploadRes = await fetch('http://localhost:4000/image/upload', {
           method: 'POST',
           body: formData,
         });
-    
-        const data = await res.json();
-        console.log('Uploaded Image URL:', data.url);
+  
+        const uploadData = await uploadRes.json();
+        console.log('Uploaded Image URL:', uploadData.url);
+
+        // midjourney api
+        const blendRes = await fetch('http://localhost:4000/api/blend', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userImageUrl: uploadData.url }),
+        });
+  
+        const blendData = await blendRes.json();
+        console.log('Midjourney blend result:', blendData.result);
+
+        // Upload the blend result to Cloudinary
+        const resultImageUrl = blendData.result.uri;
+        const uploadedResultUrl = await handleUploadResult(resultImageUrl);
       } catch (err) {
-        console.error('Upload error:', err);
+        console.error('Error during upload or blend:', err);
       } finally {
         setTimeout(() => {
           const ctx = canvas.getContext('2d');
@@ -210,6 +227,30 @@ export default function Home() {
         }, 1000);
       }
     }, 'image/jpeg');
+  };
+
+  const handleUploadResult = async (imageUrl) => {
+    try {
+      const res = await fetch('http://localhost:4000/url', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ imageUrl }),
+      });
+  
+      const data = await res.json();
+      if (res.ok) {
+        console.log('Uploaded image URL:', data.url);
+        // show it on other page
+        localStorage.setItem("blendImageUrl", data.url);
+        window.location.href = '/result';
+      } else {
+        console.error('Upload failed:', data.error);
+      }
+    } catch (err) {
+      console.error('Error uploading via URL:', err);
+    }
   };
 
   return (
