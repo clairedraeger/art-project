@@ -194,7 +194,7 @@ export default function Home() {
     
       try {
         // upload to cloudinary
-        const uploadRes = await fetch('http://localhost:4000/image/upload', {
+        const uploadRes = await fetch('https://art-backend-6mu2.onrender.com/image/upload', {
           method: 'POST',
           body: formData,
         });
@@ -203,7 +203,7 @@ export default function Home() {
         console.log('Uploaded Image URL:', uploadData.url);
 
         // midjourney api
-        const blendRes = await fetch('http://localhost:4000/api/blend', {
+        const blendRes = await fetch('https://art-backend-6mu2.onrender.com/api/blend', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -231,7 +231,9 @@ export default function Home() {
 
   const handleUploadResult = async (imageUrl) => {
     try {
-      const res = await fetch('http://localhost:4000/url', {
+      //http://localhost:4000/url
+      //https://art-backend-6mu2.onrender.com/url
+      const res = await fetch('https://art-backend-6mu2.onrender.com/url', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
