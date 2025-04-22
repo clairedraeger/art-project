@@ -10,7 +10,6 @@ export default function Home() {
   const lineWidthRef = useRef(10);
   const strokeStyleRef = useRef("#000000");
   const brushTypeRef = useRef("round");
-  const rainbowHueRef = useRef(0);
   const [lastImage, setLastImage] = useState(null);
   const [redoImage, setRedoImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +41,7 @@ export default function Home() {
       const x = e.offsetX;
       const y = e.offsetY;
       const brush = brushTypeRef.current;
+      const pressure = e.pressure || 0.5; // default pressure if not supported
     
       if (brush === "round") {
         ctx.lineTo(x, y);
@@ -113,26 +113,43 @@ export default function Home() {
       }
     };
 
-    canvas.addEventListener("mousedown", () => {
+    const handlePointerDown = (e) => {
+      e.preventDefault();
       isPainting = true;
       ctx.beginPath();
-
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       setLastImage(imageData);
       setRedoImage(null);
-    });
+    };
 
-    canvas.addEventListener('mouseup', (e) => {
+    const handlePointerMove = (e) => {
+      if (isPainting) {
+        draw(e);
+      }
+    };
+
+    const handlePointerUp = (e) => {
+      e.preventDefault();
       isPainting = false;
-    });
+    };
 
-    canvas.addEventListener("mousemove", draw);
-    ctxRef.current = ctx;
+    canvas.addEventListener("pointerdown", handlePointerDown, { passive: false });
+    canvas.addEventListener("pointermove", handlePointerMove, { passive: false });
+    canvas.addEventListener("pointerup", handlePointerUp, { passive: false });
+
+    const preventTouchScroll = (e) => {
+      if (isPainting) {
+        e.preventDefault();
+      }
+    };
+
+    document.body.addEventListener("touchmove", preventTouchScroll, { passive: false });
 
     return () => {
-      canvas.removeEventListener("mousedown", () => {});
-      canvas.removeEventListener("mouseup", () => {});
-      canvas.removeEventListener("mousemove", draw);
+      canvas.removeEventListener("pointerdown", handlePointerDown);
+      canvas.removeEventListener("pointermove", handlePointerMove);
+      canvas.removeEventListener("pointerup", handlePointerUp);
+      document.body.removeEventListener("touchmove", preventTouchScroll);
     };
   }, []);
 
