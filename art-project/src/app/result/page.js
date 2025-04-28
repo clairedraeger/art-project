@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 export default function ResultPage() {
   const [imageUrl, setImageUrl] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
+  const [submitting, setSubmitting] = useState(false); // <-- add this
   const imgRef = useRef();
 
   useEffect(() => {
@@ -12,6 +13,8 @@ export default function ResultPage() {
   }, []);
 
   const handleCrop = async (index) => {
+    if (submitting) return; // if already submitting, ignore further clicks
+    setSubmitting(true);    // set submitting to true immediately
     setSelectedImageIndex(index);
 
     const img = imgRef.current;
@@ -46,40 +49,49 @@ export default function ResultPage() {
         });
 
         const data = await res.json();
-        const imageUrl = data.url; // image url returned by server
+        const imageUrl = data.url;
 
-        // save the image URL to backend
         await fetch("https://art-backend-6mu2.onrender.com/imagehost/save", {
-        method: "POST",
-        headers: {
+          method: "POST",
+          headers: {
             "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            imageUrl: imageUrl, 
-        }),
+          },
+          body: JSON.stringify({ imageUrl }),
         });
 
         console.log("Image uploaded and URL saved:", imageUrl);
-        // go back to draw screen
         window.location.href = '/';
       } catch (err) {
         console.error("Upload failed", err);
         alert("Upload failed");
+        setSubmitting(false); // allow retry if upload failed
       }
     }, "image/png");
   };
 
   const handleBack = () => {
+    if (submitting) return; // optionally block going back while uploading
     window.location.href = "/";
   };
 
   return (
     <div style={{ textAlign: "center", padding: "2rem", overflowY: "auto", height: "100vh" }}>
-      <button onClick={handleBack}>Back to Drawing</button>
+      <button onClick={handleBack} disabled={submitting}>
+        Back to Drawing
+      </button>
       <h1>Pick a piece to display</h1>
 
       {imageUrl ? (
-        <div style={{ position: "relative", display: "inline-block", marginTop: "2rem" }}>
+        <div
+          style={{
+            position: "relative",
+            display: "inline-block",
+            marginTop: "2rem",
+            pointerEvents: submitting ? "none" : "auto", // disable clicking after submission
+            opacity: submitting ? 0.6 : 1,               // optional: fade out while submitting
+            transition: "opacity 0.3s",
+          }}
+        >
           <img
             src={imageUrl}
             ref={imgRef}
@@ -97,7 +109,7 @@ export default function ResultPage() {
                 height: "50%",
                 top: idx < 2 ? 0 : "50%",
                 left: idx % 2 === 0 ? 0 : "50%",
-                cursor: "pointer",
+                cursor: submitting ? "default" : "pointer", // cursor changes
                 border: selectedImageIndex === idx
                   ? "4px solid #4CAF50"
                   : "2px dashed rgba(255,255,255,0.5)",
