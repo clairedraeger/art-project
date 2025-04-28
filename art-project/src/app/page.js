@@ -38,14 +38,9 @@ export default function Home() {
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
     
-      // const x = e.offsetX;
-      // const y = e.offsetY;
-      const rect = canvasRef.current.getBoundingClientRect();
-      const scaleX = canvasRef.current.width / rect.width;
-      const scaleY = canvasRef.current.height / rect.height;
+      const x = e.offsetX - 15;
+      const y = e.offsetY - 15;
 
-      const x = e.offsetX * scaleX;
-      const y = e.offsetY * scaleY;``
       const brush = brushTypeRef.current;
       const pressure = e.pressure || 0.5; // default pressure if not supported
     
