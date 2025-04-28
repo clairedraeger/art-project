@@ -33,16 +33,21 @@ export default function Home() {
     const draw = (e) => {
       if (!isPainting) return;
     
+      ctx.lineWidth = lineWidthRef.current;
       ctx.strokeStyle = strokeStyleRef.current;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
     
-      const rect = canvas.getBoundingClientRect();
-      const x = (e.clientX - rect.left);
-      const y = (e.clientY - rect.top);
+      // const x = e.offsetX;
+      // const y = e.offsetY;
+      const rect = canvasRef.current.getBoundingClientRect();
+      const scaleX = canvasRef.current.width / rect.width;
+      const scaleY = canvasRef.current.height / rect.height;
+
+      const x = e.offsetX * scaleX;
+      const y = e.offsetY * scaleY;``
       const brush = brushTypeRef.current;
       const pressure = e.pressure || 0.5; // default pressure if not supported
-      ctx.lineWidth = lineWidthRef.current * pressure;
     
       if (brush === "round") {
         ctx.lineTo(x, y);
