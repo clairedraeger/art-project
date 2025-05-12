@@ -228,13 +228,12 @@ export default function Home() {
           },
           body: JSON.stringify({ userImageUrl: uploadData.url }),
         });
-  
         const blendData = await blendRes.json();
-        console.log('Midjourney blend result:', blendData.result);
-
-        // Upload the blend result to Cloudinary
-        const resultImageUrl = blendData.result.uri;
-        const uploadedResultUrl = await handleUploadResult(resultImageUrl);
+        console.log(blendData);
+        const jobId = blendData;
+        localStorage.setItem("jobId", jobId);
+        // go to result page
+        window.location.href = "/result";
       } catch (err) {
         console.error('Error during upload or blend:', err);
       } finally {
@@ -245,32 +244,6 @@ export default function Home() {
         }, 1000);
       }
     }, 'image/jpeg');
-  };
-
-  const handleUploadResult = async (imageUrl) => {
-    try {
-      //http://localhost:4000/url
-      //https://art-backend-6mu2.onrender.com/url
-      const res = await fetch('https://art-backend-6mu2.onrender.com/url', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ imageUrl }),
-      });
-  
-      const data = await res.json();
-      if (res.ok) {
-        console.log('Uploaded image URL:', data.url);
-        // show it on other page
-        localStorage.setItem("blendImageUrl", data.url);
-        window.location.href = '/result';
-      } else {
-        console.error('Upload failed:', data.error);
-      }
-    } catch (err) {
-      console.error('Error uploading via URL:', err);
-    }
   };
 
   return (
