@@ -136,10 +136,10 @@ export default function ResultPage() {
 
   return (
     <div style={{ textAlign: "center", padding: "2rem", overflowY: "auto", height: "100vh" }}>
-      <button onClick={handleBack} disabled={submitting}>
-        Back to Drawing
+      <button className="back-button" onClick={handleBack} disabled={submitting}>
+        Back to Canvas
       </button>
-      <h1>Pick a piece to display</h1>
+      <h1 className="header-text">Please pick one of the four pieces to display!</h1>
 
       {imageUrl ? (
         <div

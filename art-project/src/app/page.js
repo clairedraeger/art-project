@@ -249,9 +249,9 @@ export default function Home() {
   return (
     <div className="container">
       <div id="toolbar" ref={toolbarRef}>
-        <h1>Draw.</h1>
+        {/* <h1>Draw</h1> */}
         <div></div>
-        <label htmlFor="brush">brush style</label>
+        <label htmlFor="brush">change brush style:</label>
         <select id="brush" name="brush" onChange={handleBrushChange}>
           <option value="round">Round</option>
           <option value="spray">Spray</option>
@@ -260,16 +260,16 @@ export default function Home() {
           <option value="paint">Paint Brush</option>
           <option value="eraser">Eraser</option>
         </select>
-        <label htmlFor="stroke">stroke</label>
+        <label htmlFor="stroke">change stroke color:</label>
         <input id="stroke" name="stroke" type="color" onChange={handleColorChange} />
-        <label htmlFor="line-width">line width</label>
+        <label htmlFor="line-width">change stroke width:</label>
         <input id="line-width" name="line-width" type="number" defaultValue="10" onChange={handleLineWidthChange} />
         <div id="icon-row">
-          <button id="icon" onClick={handleClear}><FaTrash style={{ color: 'black' }} /></button>
           <button id="icon" onClick={handleUndo}><FaUndo style={{ color: 'black' }} /></button>
           <button id="icon" onClick={handleRedo}><FaRedo style={{ color: 'black' }} /></button>
+          <button id="icon" onClick={handleClear}><FaTrash style={{ color: 'black' }} /></button>
         </div>
-        <button id="submit" onClick={handleSubmit}>submit</button>
+        <button id="submit" onClick={handleSubmit}>submit drawing</button>
       </div>
       <div className="sketchboard">
         <canvas id="sketchboard" ref={canvasRef}></canvas>
