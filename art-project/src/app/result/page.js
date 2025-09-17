@@ -146,43 +146,57 @@ export default function ResultPage() {
             position: "relative",
             display: "inline-block",
             marginTop: "2rem",
-            pointerEvents: submitting ? "none" : "auto", // disable clicking after submission
-            opacity: submitting ? 0.6 : 1,               // optional: fade out while submitting
+            pointerEvents: submitting ? "none" : "auto",
+            opacity: submitting ? 0.6 : 1,
             transition: "opacity 0.3s",
           }}
         >
           <h1 className="header-text">Please pick one of the four pieces to display!</h1>
-          <img
-            src={imageUrl}
-            ref={imgRef}
-            crossOrigin="anonymous"
-            alt="Uploaded"
-            style={{ maxWidth: "100%", display: "block" }}
-          />
-          {[0, 1, 2, 3].map((idx) => (
-            <div
-              key={idx}
-              onClick={() => handleCrop(idx)}
-              style={{
-                position: "absolute",
-                width: "50%",
-                height: "50%",
-                top: idx < 2 ? 0 : "50%",
-                left: idx % 2 === 0 ? 0 : "50%",
-                cursor: submitting ? "default" : "pointer", // cursor changes
-                border: selectedImageIndex === idx
-                  ? "4px solid #4CAF50"
-                  : "2px dashed rgba(255,255,255,0.5)",
-                boxSizing: "border-box",
-                transition: "border 0.2s ease-in-out",
-              }}
-            />
-          ))}
+          <div
+    style={{
+      position: "relative",
+      display: "inline-block",
+    }}
+  >
+    <img
+      src={imageUrl}
+      ref={imgRef}
+      crossOrigin="anonymous"
+      alt="Uploaded"
+      style={{ maxWidth: "100%", display: "block" }}
+      onLoad={(e) => {
+        // force the parent div to match image size after load
+        e.target.parentElement.style.width = `${e.target.width}px`;
+        e.target.parentElement.style.height = `${e.target.height}px`;
+      }}
+    />
+
+    {[0, 1, 2, 3].map((idx) => (
+      <div
+        key={idx}
+        onClick={() => handleCrop(idx)}
+        style={{
+          position: "absolute",
+          width: "50%",
+          height: "50%",
+          top: idx < 2 ? 0 : "50%",
+          left: idx % 2 === 0 ? 0 : "50%",
+          cursor: submitting ? "default" : "pointer",
+          border:
+            selectedImageIndex === idx
+              ? "4px solid #4CAF50"
+              : "2px dashed rgba(255,255,255,0.5)",
+          boxSizing: "border-box",
+          transition: "border 0.2s ease-in-out",
+        }}
+      />
+    ))}
+  </div>
         </div>
       ) : (
         <div>
           <h1 className="header-text">Still Working!</h1>
-          <img src="/draw.gif" alt="Loading..." style={{ width: '700px' }} />
+          <img src="/draw2.gif" alt="Loading..." style={{ width: '700px' }} />
         </div>
       )}
     </div>

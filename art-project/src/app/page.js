@@ -261,9 +261,40 @@ export default function Home() {
           <option value="eraser">Eraser</option>
         </select>
         <label htmlFor="stroke">change stroke color:</label>
+        <div className="color-palette">
+          {[
+            "#FF0000", // Red
+            "#FF7F00", // Orange
+            "#FFFF00", // Yellow
+            "#0000FF", // Blue
+            "#00FF00", // Green
+            "#800080", // Purple
+            "#000000", // Black
+            "#FFFFFF", // White
+          ].map((color) => (
+            <div
+              key={color}
+              className="color-swatch"
+              style={{ backgroundColor: color }}
+              onClick={() => {
+                strokeStyleRef.current = color;
+                const colorInput = document.getElementById("stroke");
+                if (colorInput) colorInput.value = color; // update the input box
+              }}
+            ></div>
+          ))}
+        </div>
         <input id="stroke" name="stroke" type="color" onChange={handleColorChange} />
         <label htmlFor="line-width">change stroke width:</label>
-        <input id="line-width" name="line-width" type="number" defaultValue="10" onChange={handleLineWidthChange} />
+        <input
+          id="line-width"
+          name="line-width"
+          type="range"
+          min="1"
+          max="50"
+          defaultValue="10"
+          onChange={handleLineWidthChange}
+        />
         <div id="icon-row">
           <button id="icon" onClick={handleUndo}><FaUndo style={{ color: 'black' }} /></button>
           <button id="icon" onClick={handleRedo}><FaRedo style={{ color: 'black' }} /></button>
