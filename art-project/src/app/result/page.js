@@ -135,11 +135,10 @@ export default function ResultPage() {
   };
 
   return (
-    <div style={{ textAlign: "center", padding: "2rem", overflowY: "auto", height: "100vh" }}>
+    <div style={{ textAlign: "center", padding: "2rem", background: "#fcfbf4", overflowY: "auto", height: "100vh" }}>
       <button className="back-button" onClick={handleBack} disabled={submitting}>
         Back to Canvas
       </button>
-      <h1 className="header-text">Please pick one of the four pieces to display!</h1>
 
       {imageUrl ? (
         <div
@@ -152,6 +151,7 @@ export default function ResultPage() {
             transition: "opacity 0.3s",
           }}
         >
+          <h1 className="header-text">Please pick one of the four pieces to display!</h1>
           <img
             src={imageUrl}
             ref={imgRef}
@@ -180,7 +180,10 @@ export default function ResultPage() {
           ))}
         </div>
       ) : (
-        <p>Loading image...</p>
+        <div>
+          <h1 className="header-text">Still Working!</h1>
+          <img src="/draw.gif" alt="Loading..." style={{ width: '700px' }} />
+        </div>
       )}
     </div>
   );

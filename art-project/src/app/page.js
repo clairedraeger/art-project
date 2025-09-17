@@ -221,7 +221,7 @@ export default function Home() {
         console.log('Uploaded Image URL:', uploadData.url);
 
         // midjourney api
-        const blendRes = await fetch('https://art-backend-6mu2.onrender.com/api/blend', {
+        const blendRes = await fetch('http://localhost:4000/api/blend', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -276,7 +276,8 @@ export default function Home() {
       </div>
       {isLoading && (
         <div className="loading-overlay">
-          <p>Submitting drawing . . .</p>
+          <img src="/loading.gif" alt="Loading..." style={{ width: '500px' }} />
+          submitting drawing...
         </div>
       )}
     </div>
