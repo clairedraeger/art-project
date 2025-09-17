@@ -196,7 +196,7 @@ export default function ResultPage() {
       ) : (
         <div>
           <h1 className="header-text">Still Working!</h1>
-          <img src="/draw2.gif" alt="Loading..." style={{ width: '700px' }} />
+          <img src="/draw2.gif" alt="Loading..." style={{ width: '500px' }} />
         </div>
       )}
     </div>

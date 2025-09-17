@@ -30,7 +30,7 @@ h1 {
   display: flex;
   flex-direction: column;
   padding: 15px;
-  width: 150px;
+  padding-top: 25px;
 }
 
 #toolbar * {
@@ -71,7 +71,7 @@ h1 {
 }
 
 #toolbar input {
-  width: 100px;
+  width: 135px;
   flex-shrink: 0;
 }
 
