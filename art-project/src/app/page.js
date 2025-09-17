@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { FaTrash, FaUndo, FaRedo } from 'react-icons/fa';
+import { FaTrash, FaUndo, FaRedo, FaPalette } from 'react-icons/fa';
 
 export default function Home() {
   const canvasRef = useRef(null);
@@ -251,13 +251,13 @@ export default function Home() {
       <div id="toolbar" ref={toolbarRef}>
         {/* <h1>Draw</h1> */}
         <div></div>
-        <label htmlFor="brush">change brush style:</label>
+        <label htmlFor="brush">toggle eraser:</label>
         <select id="brush" name="brush" onChange={handleBrushChange}>
           <option value="round">Round</option>
-          <option value="spray">Spray</option>
+          {/* <option value="spray">Spray</option>
           <option value="calligraphy">Calligraphy</option>
           <option value="fuzzy">Fuzzy</option>
-          <option value="paint">Paint Brush</option>
+          <option value="paint">Paint Brush</option> */}
           <option value="eraser">Eraser</option>
         </select>
         <label htmlFor="stroke">change stroke color:</label>
@@ -284,7 +284,16 @@ export default function Home() {
             ></div>
           ))}
         </div>
-        <input id="stroke" name="stroke" type="color" onChange={handleColorChange} />
+        <div className="color-picker-wrapper">
+          <input
+            id="stroke"
+            name="stroke"
+            type="color"
+            className="color-picker-block"
+            onChange={handleColorChange}
+          />
+          <FaPalette className="color-picker-icon" size={20}/>
+        </div>
         <label htmlFor="line-width">change stroke width:</label>
         <input
           id="line-width"
