@@ -13,6 +13,7 @@ export default function Home() {
   const [lastImage, setLastImage] = useState(null);
   const [redoImage, setRedoImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -248,6 +249,23 @@ export default function Home() {
 
   return (
     <div className="container">
+      {showIntro && (
+        <div className="intro-overlay">
+          <div className="intro-box">
+            <h2>Welcome to the Drawing Canvas 🎨</h2>
+            <p>
+              Blend your drawing with original artwork!
+            </p>
+            <p>
+              Use the toolbar on the left to toggle to eraser, change stroke color, and change line width.
+              Draw on the canvas and when you are ready hit <b>Submit</b> to generate your result!
+            </p>
+            <button className="intro-button" onClick={() => setShowIntro(false)}>
+              Start Drawing
+            </button>
+          </div>
+        </div>
+      )}
       <div id="toolbar" ref={toolbarRef}>
         {/* <h1>Draw</h1> */}
         <div></div>
