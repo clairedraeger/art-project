@@ -151,7 +151,8 @@ export default function ResultPage() {
             transition: "opacity 0.3s",
           }}
         >
-          <h1 className="header-text">Please pick one of the four pieces to display!</h1>
+          <h1 className="header-text">Please pick one of the four pieces which you like best.</h1>
+          <p>After selection, the piece will show on the display! Thank you for participating.</p>
           <div
     style={{
       position: "relative",
